@@ -94,17 +94,16 @@ export default class App extends Component {
           <Route exact path="/lakes" component={() => <SearchForm onSearch={this.lakeSearch} />}/>
           <Route exact path="/forests" component={() => <SearchForm onSearch={this.forestSearch} />}/>
           <Nav />
+          <Switch>
           {
             (this.state.loading)
             ? <h3 className='active'>Loading...</h3>
             : <Route exact path='/' render={() => <Gallery data={this.state.pictures} />} />
           }
-          <Switch>
             <Route path='/mountains' render={() => <Gallery data={this.state.mountains} />} />
             <Route path='/lakes' render={() => <Gallery data={this.state.lakes} />} />
             <Route path='/forests' render={() => <Gallery data={this.state.forests} />} />
             <Route path='/search' render={() => <Gallery data={this.state.pictures} />} />
-            <Route exact path='/' render={() => <Gallery data={this.state.pictures} />} />
             <Route component={PageNotFound} />
           </Switch>
         </div>
