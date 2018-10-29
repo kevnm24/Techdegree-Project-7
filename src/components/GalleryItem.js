@@ -1,5 +1,6 @@
 import React from 'react';
 
+//this will render each image in a list
 const GalleryItem = props => {
   return (
     <li className='photo-container ul li'>

@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
-import apiKey from './config.js';
+import apiKey from './config';
 import './App.css';
 import axios from 'axios';
-import Nav from './components/Nav.js';
-import Gallery from './components/Gallery.js';
-import PageNotFound from './components/PageNotFound.js';
-import SearchForm from './components/SearchForm.js';
 import {
   BrowserRouter,
   Route,
   Switch
 } from 'react-router-dom';
 
+// these are the components
+import Nav from './components/Nav';
+import Gallery from './components/Gallery';
+import PageNotFound from './components/PageNotFound';
+import SearchForm from './components/SearchForm';
+
 export default class App extends Component {
 
+// sets the state of App class
   constructor() {
     super();
     this.state = {
@@ -25,6 +28,7 @@ export default class App extends Component {
     };
   }
 
+// this function is used depending on the route
   componentDidMount() {
     this.performSearch();
     this.mountainSearch();
@@ -32,6 +36,7 @@ export default class App extends Component {
     this.forestSearch();
   }
 
+// these function are used for to search the flickr api's which are then used for the state of empty containers.
   performSearch = (userSearch = 'earth') => {
     axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${userSearch}&per_page=24&format=json&nojsoncallback=1`)
       .then(response => {
@@ -83,6 +88,10 @@ export default class App extends Component {
           console.log('Error fetching and parsing data', error);
         })
       }
+
+// this will render the routing for the app
+// switch is used to render component PageNotFound when route does not match any of those below
+// this will add a loading message when app first starts up and when ever page is refreshed
 
   render() {
     console.log(this.state.pictures)
