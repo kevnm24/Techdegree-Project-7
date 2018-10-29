@@ -27,7 +27,9 @@ export default class App extends Component {
 
   componentDidMount() {
     this.performSearch();
-    this.navSearch();
+    this.mountainSearch();
+    this.lakeSearch();
+    this.forestSearch();
   }
 
   performSearch = (userSearch = 'earth') => {
@@ -43,8 +45,8 @@ export default class App extends Component {
       })
   }
 
-  navSearch = () => {
-    axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=mountains&per_page=24&format=json&nojsoncallback=1`)
+  mountainSearch = (userSearch = 'mountains') => {
+    axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${userSearch}&per_page=24&format=json&nojsoncallback=1`)
       .then(response => {
         this.setState({
           mountains: response.data.photos.photo,
@@ -54,35 +56,49 @@ export default class App extends Component {
       .catch(error=> {
         console.log('Error fetching and parsing data', error);
       })
-    axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=lakes&per_page=24&format=json&nojsoncallback=1`)
-      .then(response => {
-        this.setState({
-          lakes: response.data.photos.photo,
-          loading: false
+    }
+
+    lakeSearch = (userSearch = 'lakes') => {
+      axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${userSearch}&per_page=24&format=json&nojsoncallback=1`)
+        .then(response => {
+          this.setState({
+            lakes: response.data.photos.photo,
+            loading: false
+          })
         })
-      })
-      .catch(error=> {
-        console.log('Error fetching and parsing data', error);
-      })
-    axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=forests&per_page=24&format=json&nojsoncallback=1`)
-      .then(response => {
-        this.setState({
-          forests: response.data.photos.photo,
-          loading: false
+        .catch(error=> {
+          console.log('Error fetching and parsing data', error);
         })
-      })
-      .catch(error=> {
-        console.log('Error fetching and parsing data', error);
-      })
-  }
+      }
+
+    forestSearch = (userSearch = 'forest') => {
+      axios.get(`https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${userSearch}&per_page=24&format=json&nojsoncallback=1`)
+        .then(response => {
+          this.setState({
+            forests: response.data.photos.photo,
+            loading: false
+          })
+        })
+        .catch(error=> {
+          console.log('Error fetching and parsing data', error);
+        })
+      }
 
   render() {
     console.log(this.state.pictures)
     return (
       <BrowserRouter>
         <div className='container'>
-          <Route path="/search" component={() => <SearchForm onSearch={this.performSearch}/>}/>
+          <Route exact path="/" component={() => <SearchForm onSearch={this.performSearch} />}/>
+          <Route exact path="/mountains" component={() => <SearchForm onSearch={this.mountainSearch} />}/>
+          <Route exact path="/lakes" component={() => <SearchForm onSearch={this.lakeSearch} />}/>
+          <Route exact path="/forests" component={() => <SearchForm onSearch={this.forestSearch} />}/>
           <Nav />
+          {
+            (this.state.loading)
+            ? <h3 className='active'>Loading...</h3>
+            : <Route exact path='/' render={() => <Gallery data={this.state.pictures} />} />
+          }
           <Switch>
             <Route path='/mountains' render={() => <Gallery data={this.state.mountains} />} />
             <Route path='/lakes' render={() => <Gallery data={this.state.lakes} />} />
@@ -90,11 +106,6 @@ export default class App extends Component {
             <Route path='/search' render={() => <Gallery data={this.state.pictures} />} />
             <Route exact path='/' render={() => <Gallery data={this.state.pictures} />} />
             <Route component={PageNotFound} />
-            {
-              (this.state.loading)
-              ? <p>Loading...</p>
-              : <Route exact path='/' render={() => <Gallery data={this.state.pictures} />} />
-            }
           </Switch>
         </div>
       </BrowserRouter>
